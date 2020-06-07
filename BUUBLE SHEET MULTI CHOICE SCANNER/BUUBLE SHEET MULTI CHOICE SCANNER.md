@@ -1,3 +1,4 @@
+## IMPORT THE REQUIRED LIBRARIES.
 ```python
 import cv2
 import numpy as np
@@ -5,7 +6,7 @@ import matplotlib.pyplot as plt
 %matplotlib inline
 ```
 
-
+## DEFINE A METHOD TO SORT THE CONTOURS IN ORDER.
 ```python
 def sort_contours(cnts, method="left-to-right"):
 
@@ -25,8 +26,11 @@ def sort_contours(cnts, method="left-to-right"):
     
     return (cnts, boundingBoxes)
 ```
+## FOUR POINT TRANSFORM TECHNIQUE.
+Basically all that the below two sections of code do is to kind of crop and enlarge the actually necessary potion of the image.</br>
+This makes contour detection and thresholding easier.
 
-
+## 
 ```python
 def order_points(pts):
     
@@ -70,7 +74,7 @@ def four_point_transform(image, pts):
     return warped
 ```
 
-
+### CUSTOM FUNCTIONS TO DISPLAY THE IMAGES.
 ```python
 def display_img(img):
     fig = plt.figure(figsize=(14,10))
@@ -88,11 +92,8 @@ def display_col(img):
 ```
 
 
-```python
 
-```
-
-
+### DEFINE THE ANSWER KEY AS A DICTIONARY.
 ```python
 ANSWER_KEY = {0: 4, 1: 3, 2:2 , 3: 3, 4: 1}
 ```
@@ -103,9 +104,7 @@ img=cv2.imread('test_04.png')
 ```
 
 
-```python
 
-```
 
 
 ```python
@@ -135,8 +134,9 @@ plt.imshow(img_col)
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 gray = cv2.GaussianBlur(gray, (5, 5), 0)
 ```
+# NOW WE NEED TO PREPROCESS THE IMAGE BEFORE EXTRACTING CONTOURS.
 
-# USING HSV COLORING
+## PREPROCESSING USING HSV COLORING
 
 
 ```python
@@ -154,7 +154,7 @@ display_img(bw)
 ![png](output_14_0.png)
 
 
-# USING THRESHOLD
+## PREPROCESSING USING THRESHOLD
 
 
 ```python
@@ -177,7 +177,7 @@ display_img(thresh21)
 ![png](output_17_0.png)
 
 
-# USING EDGES
+# PREPROCESSING USING EDGES
 
 
 ```python
@@ -189,7 +189,7 @@ display_img(edged)
 ![png](output_19_0.png)
 
 
-
+## EXTRACTING CONTOURS
 ```python
 contours,hierarchy = cv2.findContours(thresh21.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
 ```
@@ -206,7 +206,7 @@ len(contours)
 
 
 
-
+## DISPLAY THE CONTOURS DETECTED.
 ```python
 # Drawing External Contours
 
@@ -308,7 +308,7 @@ ax2.imshow(warped,cmap='gray')
 ![png](output_29_1.png)
 
 
-
+## PREPROCESSING TO EXTRACT CONTOURS OF PARTICULAR OPTIONS
 ```python
 ret,thresh = cv2.threshold(warped,0,255,cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)
 
@@ -347,7 +347,7 @@ for c in contours1:
         quesCnts.append(c)
 ```
 
-
+## EXTRACTING A SINGLE OPTION USING A MASK
 ```python
 mask1=np.zeros(thresh.shape,dtype="uint8")
 cv2.drawContours(mask1,[quesCnts[0]],-1,255,-1)
@@ -417,7 +417,7 @@ len(quesCnts)
 
 
 
-
+## HERE THE PROCESS OF SELECTING A ROW IS SHOWN 
 ```python
 (quesCnts1,_)=sort_contours(quesCnts,method="top-to-bottom")
 # Drawing External Contours
@@ -464,10 +464,13 @@ display_col(img3)
 
 
 
-```python
 
-```
-
+## ALL THE ABOVE THINGS ARE PUT TOGETHER.
+The shaded option or the option selected by the person giving the test is extracted by counting the maximum number of non-black pixels after extracting a single option in each row.
+</br>
+If the option passes the criteria of having the most number of non-black pixels in the masked image, it is selected as the option chosen by the test giver.
+</br>
+The index of this option is then checked with the Answer key and the score is calculated and displayed.
 
 ```python
 correct=0
